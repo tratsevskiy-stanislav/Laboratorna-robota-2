@@ -237,50 +237,150 @@ ClientHello у TLS 1.3 містить попередні налаштуванн�
 Вивід кроків 3.1 і 3.2:
 
 ```text
+root@cs-201-24:/lab/work# acme-root
+збережено /lab/tls/acme-root.crt
+root@cs-201-24:/lab/work# openssl x509 -in /lab/tls/acme-root.crt -noout -subject -dates
+subject=CN = Pebble Root CA 557e75
+notBefore=Nov 17 17:18:31 2026 GMT
+notAfter=Nov 17 17:18:31 2056 GMT
+root@cs-201-24:/lab/work# curl -sS --cacert /lab/tls/acme-root.crt https://www.cs-201-24.lab/
+curl: (60) SSL certificate problem: self-signed certificate
+More details here: https://curl.se/docs/sslcerts.html
 
+curl failed to verify the legitimacy of the server and therefore could not
+establish a secure connection to it. To learn more about this situation and
+how to fix it, please visit the web page mentioned above.
 ```
 
 Вивід кроку 3.3 (останні рядки `lego` і рядки журналу nginx):
 
 ```text
-
+2026/11/17 17:32:55 [INFO] [www.cs-201-24.lab, api.cs-201-24.lab] acme: Obtaining SAN certificate
+2026/11/17 17:32:55 [INFO] [www.cs-201-24.lab] AuthURL: https://ca.lab:14000/authZ/VJL8wetqZXSyynqrJ5aMY4M7vmjUQbzpnKT3qYI_k4s
+2026/11/17 17:32:55 [INFO] [api.cs-201-24.lab] AuthURL: https://ca.lab:14000/authZ/qxC6MF231YkarHeCD5qZ_uG7fJxhCiXuCRuPXlnsQow
+2026/11/17 17:32:55 [INFO] [api.cs-201-24.lab] acme: Could not find solver for: tls-alpn-01
+2026/11/17 17:32:55 [INFO] [api.cs-201-24.lab] acme: use http-01 solver
+2026/11/17 17:32:55 [INFO] [www.cs-201-24.lab] acme: Could not find solver for: tls-alpn-01
+2026/11/17 17:32:55 [INFO] [www.cs-201-24.lab] acme: use http-01 solver
+2026/11/17 17:32:55 [INFO] [api.cs-201-24.lab] acme: Trying to solve HTTP-01
+2026/11/17 17:33:01 [INFO] [api.cs-201-24.lab] The server validated our request
+2026/11/17 17:33:01 [INFO] [www.cs-201-24.lab] acme: Trying to solve HTTP-01
+2026/11/17 17:33:08 [INFO] [www.cs-201-24.lab] The server validated our request
+2026/11/17 17:33:08 [INFO] [www.cs-201-24.lab, api.cs-201-24.lab] acme: Validations succeeded; requesting certificates
+2026/11/17 17:33:08 [INFO] Wait for certificate [timeout: 30s, interval: 500ms]
+2026/11/17 17:33:08 [INFO] [www.cs-201-24.lab] Server responded with a certificate.
+10.53.0.10 - - [17/Nov/2026:17:30:06 +0000] "GET /.well-known/acme-challenge/9rfcgUQKM4LnA4Tymeof6c3rci3XwtVJRVd9BW-EDfQ HTTP/1.1" 200 87 "-" "LetsEncrypt-Pebble-VA (linux; amd64)"
+10.53.0.10 - - [17/Nov/2026:17:30:06 +0000] "GET /.well-known/acme-challenge/9rfcgUQKM4LnA4Tymeof6c3rci3XwtVJRVd9BW-EDfQ HTTP/1.1" 200 87 "-" "LetsEncrypt-Pebble-VA (linux; amd64)"
+10.53.0.10 - - [17/Nov/2026:17:30:06 +0000] "GET /.well-known/acme-challenge/9rfcgUQKM4LnA4Tymeof6c3rci3XwtVJRVd9BW-EDfQ HTTP/1.1" 200 87 "-" "LetsEncrypt-Pebble-VA (linux; amd64)"
+10.53.0.10 - - [17/Nov/2026:17:32:55 +0000] "GET /.well-known/acme-challenge/Ng7KSJTb-2UzozG8Eb63-3kCiw_fnWGFuyMQjSpopp4 HTTP/1.1" 200 87 "-" "LetsEncrypt-Pebble-VA (linux; amd64)"
+10.53.0.10 - - [17/Nov/2026:17:32:55 +0000] "GET /.well-known/acme-challenge/Ng7KSJTb-2UzozG8Eb63-3kCiw_fnWGFuyMQjSpopp4 HTTP/1.1" 200 87 "-" "LetsEncrypt-Pebble-VA (linux; amd64)"
+10.53.0.10 - - [17/Nov/2026:17:32:55 +0000] "GET /.well-known/acme-challenge/Ng7KSJTb-2UzozG8Eb63-3kCiw_fnWGFuyMQjSpopp4 HTTP/1.1" 200 87 "-" "LetsEncrypt-Pebble-VA (linux; amd64)"
+10.53.0.10 - - [17/Nov/2026:17:33:01 +0000] "GET /.well-known/acme-challenge/ig-kx88-p8KGhVDy4hDwSEq6lNW5ibgG4BIoJVVghSk HTTP/1.1" 200 87 "-" "LetsEncrypt-Pebble-VA (linux; amd64)"
+10.53.0.10 - - [17/Nov/2026:17:33:01 +0000] "GET /.well-known/acme-challenge/ig-kx88-p8KGhVDy4hDwSEq6lNW5ibgG4BIoJVVghSk HTTP/1.1" 200 87 "-" "LetsEncrypt-Pebble-VA (linux; amd64)"
+10.53.0.10 - - [17/Nov/2026:17:33:01 +0000] "GET /.well-known/acme-challenge/ig-kx88-p8KGhVDy4hDwSEq6lNW5ibgG4BIoJVVghSk HTTP/1.1" 200 87 "-" "LetsEncrypt-Pebble-VA (linux; amd64)"
 ```
 
 Вивід кроку 3.4:
 
 ```text
-
+root@cs-201-24:/lab/work#ccd /lab/work/lego/certificates
+openssl x509 -in www.cs-201-24.lab.crt -noout -subject -issuer -dates -serial -ext subjectAltName
+openssl x509 -in www.cs-201-24.lab.issuer.crt -noout -subject -issuer
+subject=CN = www.cs-201-24.lab
+issuer=CN = Pebble Intermediate CA 0242ac
+notBefore=Nov 17 17:33:08 2026 GMT
+notAfter=Nov 17 17:33:07 2031 GMT
+serial=6C59BF1FA7D5C89E
+X509v3 Subject Alternative Name: 
+    DNS:www.cs-201-24.lab, DNS:api.cs-201-24.lab
+subject=CN = Pebble Intermediate CA 0242ac
+issuer=CN = Pebble Root CA 557e75
 ```
 
 Вивід кроку 3.5:
 
 ```text
+root@cs-201-24:/lab/work/lego/certificates# cp www.cs-201-24.lab.crt /lab/tls/server.crt
+cp www.cs-201-24.lab.key /lab/tls/server.key
+web-reload
+nginx: the configuration file /lab/nginx.conf syntax is ok
+nginx: configuration file /lab/nginx.conf test is successful
+2026/11/17 17:37:46 [notice] 63#63: signal process started
+root@cs-201-24:/lab/work/lego/certificates# curl -sS --cacert /lab/tls/acme-root.crt https://www.cs-201-24.lab/
+curl: (60) SSL certificate problem: unable to get local issuer certificate
+More details here: https://curl.se/docs/sslcerts.html
 
+curl failed to verify the legitimacy of the server and therefore could not
+establish a secure connection to it. To learn more about this situation and
+how to fix it, please visit the web page mentioned above.
+root@cs-201-24:/lab/work/lego/certificates# openssl s_client -connect www.cs-201-24.lab:443 -servername www.cs-201-24.lab -CAfile /lab/tls/acme-root.crt \
+</dev/null 2>/dev/null | sed -n '/^Certificate chain/,/^---/p;/^Verify return code/p'
+Certificate chain
+ 0 s:CN = www.cs-201-24.lab
+   i:CN = Pebble Intermediate CA 0242ac
+   a:PKEY: id-ecPublicKey, 256 (bit); sigalg: RSA-SHA256
+   v:NotBefore: Nov 17 17:33:08 2026 GMT; NotAfter: Nov 17 17:33:07 2031 GMT
+---
+Verify return code: 21 (unable to verify the first certificate)
 ```
 
 Вивід кроку 3.6:
 
 ```text
+root@cs-201-24:/lab/work/lego/certificates# cat www.cs-201-24.lab.crt www.cs-201-24.lab.issuer.crt > /lab/tls/server.crt
+web-reload
+nginx: the configuration file /lab/nginx.conf syntax is ok
+nginx: configuration file /lab/nginx.conf test is successful
+2026/11/17 17:41:01 [notice] 71#71: signal process started
 
+root@cs-201-24:/lab/work/lego/certificates# curl -sS --cacert /lab/tls/acme-root.crt https://www.cs-201-24.lab/
+curl -sS --cacert /lab/tls/acme-root.crt https://api.cs-201-24.lab/
+openssl s_client -connect www.cs-201-24.lab:443 -servername www.cs-201-24.lab -CAfile /lab/tls/acme-root.crt \
+</dev/null 2>/dev/null | sed -n '/^Certificate chain/,/^---/p;/^Verify return code/p'
+server: cs-201-24 (https)
+Host: www.cs-201-24.lab
+SNI: www.cs-201-24.lab
+protocol: TLSv1.3
+server: cs-201-24 (https)
+Host: api.cs-201-24.lab
+SNI: api.cs-201-24.lab
+protocol: TLSv1.3
+Certificate chain
+ 0 s:CN = www.cs-201-24.lab
+   i:CN = Pebble Intermediate CA 0242ac
+   a:PKEY: id-ecPublicKey, 256 (bit); sigalg: RSA-SHA256
+   v:NotBefore: Nov 17 17:33:08 2026 GMT; NotAfter: Nov 17 17:33:07 2031 GMT
+ 1 s:CN = Pebble Intermediate CA 0242ac
+   i:CN = Pebble Root CA 557e75
+   a:PKEY: rsaEncryption, 2048 (bit); sigalg: RSA-SHA256
+   v:NotBefore: Nov 17 17:18:31 2026 GMT; NotAfter: Nov 17 17:18:31 2056 GMT
+---
+Verify return code: 0 (ok)
 ```
 
 | Параметр | Значення |
 |---|---|
-| Видавець сертифіката сервера | |
-| Видавець сертифіката видавця | |
-| Імена в SAN | |
-| Строк дії (від – до) | |
-| Тип ключа сервера і алгоритм підпису | |
-| Кількість сертифікатів, які надсилає сервер, у кроці 3.5 і в кроці 3.6 | |
+| Видавець сертифіката сервера |Pebble Intermediate CA 0242ac |
+| Видавець сертифіката видавця |Pebble Root CA 557e75 |
+| Імена в SAN |www.cs-201-24.lab, api.cs-201-24.lab |
+| Строк дії (від – до) |Nov 17 17:33:08 2026 GMT – Nov 17 17:33:07 2031 GMT |
+| Тип ключа сервера і алгоритм підпису |id-ecPublicKey, 256 біт,  |
+| Кількість сертифікатів, які надсилає сервер, у кроці 3.5 і в кроці 3.6 |У кроці 3.5 — 1 сертифікат, у кроці 3.6 — 2 сертифікати |
 
 1. Хто і як перевірив, що ви контролюєте обидва імена? Вкажіть рядки виводу, які це підтверджують.
-
-2. Чому в кроці 3.5 перевірка не пройшла, хоча корінь центру сертифікації вказано в `--cacert`, а сертифікат виданий правильно?
-
-3. У виводі ланцюжка для сертифіката сервера вказано `id-ecPublicKey` і `RSA-SHA256`. Що означає кожне з цих значень і чому вони не суперечать одне одному?
-
-4. Що станеться з перевіркою вашого сервера після перезапуску стенда і чому? Що в реальній інфраструктурі відповідає цій ситуації?
-
+Перевірив сам центр сертифікації ACME. Програма lego поклала на мій сайт спеціальні файли-паролі, а центр сертифікації зайшов на обидва сайти і прочитав їх. Так він переконався, що сайти справді мої.
+Рядки підтвердження (з виводів lego і nginx):
+[api.cs-201-24.lab] The server validated our request
+[www.cs-201-24.lab] The server validated our request
+"GET /.well-known/acme-challenge/... HTTP/1.1" 200
+3. Чому в кроці 3.5 перевірка не пройшла, хоча корінь центру сертифікації вказано в `--cacert`, а сертифікат виданий правильно?
+Мій сертифікат підписав посередник, а не сам головний центр. У кроці 3.5 сервер віддав тільки свій сертифікат, а про посередника забув. Через це програма не змогла простежити зв'язок від мого сайту до головного центру.
+4. У виводі ланцюжка для сертифіката сервера вказано `id-ecPublicKey` і `RSA-SHA256`. Що означає кожне з цих значень і чому вони не суперечать одне одному?
+id-ecPublicKey — це тип мого ключа. RSA-SHA256 — це тип підпису, яким центр сертифікації завірив мій документ своїм ключем.
+Вони не суперечать одне одному, бо це два різні ключі: я використовую свій, а центр сертифікації ставить печатку своїм.
+5. Що станеться з перевіркою вашого сервера після перезапуску стенда і чому? Що в реальній інфраструктурі відповідає цій ситуації?
+Після перезапуску перевірка видасть помилку, тому що стенд при кожному запуску створює новий головний центр сертифікації, а мій збережений файл acme-root.crt залишиться від старого.
+У реальному житті таке буває, коли центр сертифікації оновлює свої головні сертифікати або коли людина заходить на сайт зі старого телефона чи комп'ютера, де ще немає оновленої бази сертифікатів.
 ## Завдання 4. Діагностика несправностей
 
 Вивід кроку 4.1:
