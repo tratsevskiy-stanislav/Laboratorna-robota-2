@@ -97,37 +97,49 @@ client: 10.53.1.1
 Вивід кроку 2.1 (TLS 1.3):
 
 ```text
-root@cs-201-24:/lab/work# openssl s_client -connect cdn.cs-201-24.lab:443 -servername cdn.cs-201-24.lab -alpn h2,http/1.1 \
--CAfile $STAND_CA -trace </dev/null > t2-13.txt 2>&1
-grep -a -E '^(Sent|Received) Record|Content Type|^      [A-Z][A-Za-z]+, Length' t2-13.txt
-grep -a -E '^(ALPN|New,)|\bVerify return' t2-13.txt
 Sent Record
   Content Type = Handshake (22)
+  Length = 332
+    ClientHello, Length=328
 Received Record
   Content Type = Handshake (22)
+  Length = 122
+    ServerHello, Length=118
 Received Record
   Content Type = ChangeCipherSpec (20)
+  Length = 1
 Received Record
   Content Type = ApplicationData (23)
+  Length = 36
   Inner Content Type = Handshake (22)
+    EncryptedExtensions, Length=15
 Received Record
   Content Type = ApplicationData (23)
+  Length = 1004
   Inner Content Type = Handshake (22)
+    Certificate, Length=983
 Received Record
   Content Type = ApplicationData (23)
+  Length = 95
   Inner Content Type = Handshake (22)
+    CertificateVerify, Length=74
 Received Record
   Content Type = ApplicationData (23)
+  Length = 69
   Inner Content Type = Handshake (22)
+    Finished, Length=48
 Sent Record
   Content Type = ChangeCipherSpec (20)
+  Length = 1
 Sent Record
   Content Type = ApplicationData (23)
+  Length = 69
   Inner Content Type = Handshake (22)
+    Finished, Length=48
 Sent Record
   Content Type = ApplicationData (23)
+  Length = 19
   Inner Content Type = Alert (21)
-New, TLSv1.3, Cipher is TLS_AES_256_GCM_SHA384
 ALPN protocol: h2
 Verify return code: 0 (ok)
 ```
@@ -135,37 +147,54 @@ Verify return code: 0 (ok)
 Вивід кроку 2.2 (TLS 1.2):
 
 ```text
-root@cs-201-24:/lab/work# openssl s_client -connect cdn.cs-201-24.lab:443 -servername cdn.cs-201-24.lab -alpn h2,http/1.1 \
--CAfile $STAND_CA -tls1_2 -trace </dev/null > t2-12.txt 2>&1
-grep -a -E '^(Sent|Received) Record|Content Type|^      [A-Z][A-Za-z]+, Length' t2-12.txt
-grep -a -E '^(ALPN|New,)|\bVerify return' t2-12.txt
 Sent Record
   Content Type = Handshake (22)
+  Length = 227
+    ClientHello, Length=223
 Received Record
   Content Type = Handshake (22)
+  Length = 78
+    ServerHello, Length=74
 Received Record
   Content Type = Handshake (22)
+  Length = 982
+    Certificate, Length=978
 Received Record
   Content Type = Handshake (22)
+  Length = 115
+    ServerKeyExchange, Length=111
 Received Record
   Content Type = Handshake (22)
+  Length = 4
+    ServerHelloDone, Length=0
 Sent Record
   Content Type = Handshake (22)
+  Length = 37
+    ClientKeyExchange, Length=33
 Sent Record
   Content Type = ChangeCipherSpec (20)
+  Length = 1
 Sent Record
   Content Type = Handshake (22)
+  Length = 40
+    Finished, Length=12
 Received Record
   Content Type = Handshake (22)
+  Length = 218
+    NewSessionTicket, Length=214
 Received Record
   Content Type = ChangeCipherSpec (20)
+  Length = 1
 Received Record
   Content Type = Handshake (22)
+  Length = 40
+    Finished, Length=12
 Received Record
   Content Type = ApplicationData (23)
+  Length = 64
 Sent Record
   Content Type = Alert (21)
-New, TLSv1.2, Cipher is ECDHE-ECDSA-AES256-GCM-SHA384
+  Length = 26
 ALPN protocol: h2
     Verify return code: 0 (ok)
 ```
@@ -174,16 +203,16 @@ ALPN protocol: h2
 
 | № | Напрям | `Content Type` | `Inner Content Type` | Повідомлення | `Length` |
 |---|---|---|---|---|---|
-| 1 |К→С |Handshake (22) |- |ClientHello |517 |
-| 2 |С→К |Handshake (22) |- |ServerHello, EncryptedExtensions, Certificate, CertificateVerify, Finished |1241 |
+| 1 |К→С |Handshake (22) |- |ClientHello |332 |
+| 2 |С→К |Handshake (22) |- |ServerHello|122 |
 | 3 |С→К |ChangeCipherSpec (20) |- |ChangeCipherSpec |1 |
-| 4 |С→К |ApplicationData (23) |Handshake (22) |NewSessionTicket |134 |
-| 5 |С→К |ApplicationData (23) |Handshake (22) |NewSessionTicket |134 |
-| 6 |С→К |ApplicationData (23) |Handshake (22) |NewSessionTicket |134 |
-| 7 |С→К |ApplicationData (23) |Handshake (22) NewSessionTicket| |134 |
+| 4 |С→К |ApplicationData (23) |Handshake (22) |EncryptedExtensions |36|
+| 5 |С→К |ApplicationData (23) |Handshake (22) |Certificate |1004 |
+| 6 |С→К |ApplicationData (23) |Handshake (22) |CertificateVerify |95 |
+| 7 |С→К |ApplicationData (23) |Handshake (22) |Finished |69 |
 | 8 |К→С |ChangeCipherSpec (20) |- |ChangeCipherSpec |1 |
-| 9 |К→С |ApplicationData (23) |Handshake (22) |Finished |52 |
-| 10 |К→С |ApplicationData (23) |Alert (21) |CloseNotify |25 |
+| 9 |К→С |ApplicationData (23) |Handshake (22) |Finished |69 |
+| 10 |К→С |ApplicationData (23) |Alert (21) |CloseNotify |19|
 
 Вивід кроків 2.3 і 2.4:ІІ
 
